@@ -16,4 +16,26 @@ class BookRepositoryImpl: BookRepository {
         }
     }
 
+    override suspend fun addBook(book: Book): Book {
+        return try {
+            localDataSource.addBook(book)
+        } catch (e: Exception) {
+            throw Exception("Error adding book", e)
+        }
+    }
+
+    override suspend fun getBookById(id: Int): Book {
+        return try {
+            val book = localDataSource.getBook(id)
+            book ?: throw Exception("Book with ID $id not found")
+        } catch (e: Exception) {
+            throw Exception("Error fetching book by ID", e)
+        }
+    }
+
+
+
 }
+
+
+

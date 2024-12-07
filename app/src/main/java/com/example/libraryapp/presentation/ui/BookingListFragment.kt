@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.libraryapp.R
@@ -58,7 +59,15 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
     private fun setupRecyclerView() {
         bookAdapter = BookAdapter { book ->
             // Navegar al detalle usando Navigation Component pasar el id
+            val bundle = Bundle().apply {
+                putInt("book_id", book.id)
+            }
+            findNavController().navigate(
+                R.id.action_bookingListFragment_to_bookingDetailFragment,
+                bundle
+            )
         }
+
         binding.recyclerView.apply {
             adapter = bookAdapter
             layoutManager = LinearLayoutManager(context)
@@ -67,7 +76,6 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
             )
         }
     }
-
     private fun showAddBookDialog() {
         val dialogBinding = DialogAddBookBinding.inflate(layoutInflater)
 
@@ -76,7 +84,21 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
             .setView(dialogBinding.root)
             .setPositiveButton("Add") { _, _ ->
                 with(dialogBinding) {
-                   //TODO call the function that add a new book
+                    val title = dialogBinding.titleInput.text.toString().trim()
+                    val author = dialogBinding.authorInput.text.toString().trim()
+                    val yearText = dialogBinding.yearInput.text.toString().trim()
+                    val description = dialogBinding.descriptionInput.text.toString().trim()
+                    if (title.isEmpty() || author.isEmpty() || yearText.isEmpty() || description.isEmpty()) {
+                        Snackbar.make(binding.root, "Please fill out all fields", Snackbar.LENGTH_SHORT).show()
+                    } else {
+                        val year = yearText.toIntOrNull()
+                        if (year == null || year <= 0) {
+                            Snackbar.make(binding.root, "Invalid year", Snackbar.LENGTH_SHORT).show()
+                        } else {
+                            viewModel.addBook(title, author, year, description)
+                            Snackbar.make(binding.root, "Book added successfully", Snackbar.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             }
             .setNegativeButton("Cancel", null)

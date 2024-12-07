@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+
+
+
 }
 
 android {
@@ -37,6 +40,7 @@ android {
     buildFeatures {
         viewBinding = true
     }
+
 }
 
 dependencies {
@@ -57,4 +61,5 @@ dependencies {
     implementation(libs.androidx.lifecycle.livedata.ktx)
     //Fragments
     implementation(libs.androidx.fragment.ktx)
+
 }

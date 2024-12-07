@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/bookingListFragment">
+
+    <fragment
+        android:id="@+id/bookingListFragment"
+        android:name="com.example.libraryapp.presentation.ui.BookingListFragment"
+        android:label="BookingListFragment" >
+        <action
+            android:id="@+id/action_bookingListFragment_to_bookingDetailFragment"
+            app:destination="@id/bookingDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/bookingDetailFragment"
+        android:name="com.example.libraryapp.presentation.ui.BookingDetailFragment"
+        android:label="BookingDetailFragment">
+
+    </fragment>
+</navigation>

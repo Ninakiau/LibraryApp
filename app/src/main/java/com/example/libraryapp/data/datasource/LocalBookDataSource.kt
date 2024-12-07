@@ -15,9 +15,11 @@ class LocalBookDataSource {
         return BookDatabase.getBook(id)
     }
 
-    suspend fun addBook(book: Book) {
+    suspend fun addBook(book: Book) : Book {
         delay(500)
         BookDatabase.addBook(book)
+        return book
+
     }
 
     //TODO add the updateFunction

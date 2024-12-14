@@ -33,6 +33,28 @@ class BookRepositoryImpl: BookRepository {
         }
     }
 
+    override suspend fun toggleBookAvailability(id: Int): Book {
+        val book = getBookById(id)
+        val updatedBook = book.copy(isAvailable = !book.isAvailable)
+        return updateBook(updatedBook)
+    }
+
+    override suspend fun updateBook(book: Book): Book {
+        return try {
+            localDataSource.updateBook(book)
+        } catch (e: Exception) {
+            throw Exception("Error updating book", e)
+        }
+    }
+
+    override suspend fun deleteBook(id: Int) {
+        return try {
+            localDataSource.deleteBook(id)
+        } catch (e: Exception) {
+            throw Exception("Error deleting book", e)
+        }
+    }
+
 
 
 }

@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 
 class BookDetailViewModel : ViewModel(){
     private val getBookByIdUseCase = UseCaseProvider.provideGetBookDetailUseCase()
+    private val toggleBookAvailabilityUseCase = UseCaseProvider.provideToggleBookAvailabilityUseCase()
 
     private val _book = MutableLiveData<Book?>()
     val book: MutableLiveData<Book?> = _book
@@ -32,6 +33,18 @@ class BookDetailViewModel : ViewModel(){
                 _error.value = e.localizedMessage ?: "An unknown error occurred"
             } finally {
                 _loading.value = false
+            }
+        }
+    }
+    fun toggleBookAvailability(book: Book) {
+        viewModelScope.launch {
+            try {
+                val updatedBook = toggleBookAvailabilityUseCase(book.id)
+                _book.value = updatedBook
+
+            } catch (e: Exception) {
+                // Manejar errores
+                _error.value = "Error toggling book availability"
             }
         }
     }

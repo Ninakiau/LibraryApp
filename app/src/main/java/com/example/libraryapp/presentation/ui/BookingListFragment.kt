@@ -38,6 +38,7 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val button = view.findViewById<FloatingActionButton>(R.id.addButton)
+
         setupRecyclerView()
 
         button.setOnClickListener {
@@ -46,7 +47,9 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
 
         viewModel.books.observe(viewLifecycleOwner) { books ->
             bookAdapter.submitList(books)
-            binding.emptyView.isVisible = books.isEmpty()
+            if (books != null) {
+                binding.emptyView.isVisible = books.isEmpty()
+            }
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->
@@ -57,16 +60,21 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
     }
 
     private fun setupRecyclerView() {
-        bookAdapter = BookAdapter { book ->
-            // Navegar al detalle usando Navigation Component pasar el id
-            val bundle = Bundle().apply {
-                putInt("book_id", book.id)
+        bookAdapter = BookAdapter(
+            onItemClick = { book ->
+                // Navegar al detalle usando Navigation Component pasar el id
+                val bundle = Bundle().apply {
+                    putInt("book_id", book.id)
+                }
+                findNavController().navigate(
+                    R.id.action_bookingListFragment_to_bookingDetailFragment,
+                    bundle
+                )
+            },
+            onAvailabilityToggle = { book ->
+                viewModel.toggleBookAvailability(book)
             }
-            findNavController().navigate(
-                R.id.action_bookingListFragment_to_bookingDetailFragment,
-                bundle
-            )
-        }
+        )
 
         binding.recyclerView.apply {
             adapter = bookAdapter
@@ -88,6 +96,8 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
                     val author = dialogBinding.authorInput.text.toString().trim()
                     val yearText = dialogBinding.yearInput.text.toString().trim()
                     val description = dialogBinding.descriptionInput.text.toString().trim()
+                    val isAvailable = switch1.isChecked
+
                     if (title.isEmpty() || author.isEmpty() || yearText.isEmpty() || description.isEmpty()) {
                         Snackbar.make(binding.root, "Please fill out all fields", Snackbar.LENGTH_SHORT).show()
                     } else {
@@ -95,7 +105,7 @@ class BookingListFragment : Fragment(R.layout.fragment_booking_list) {
                         if (year == null || year <= 0) {
                             Snackbar.make(binding.root, "Invalid year", Snackbar.LENGTH_SHORT).show()
                         } else {
-                            viewModel.addBook(title, author, year, description)
+                            viewModel.addBook(title, author, year, description, isAvailable )
                             Snackbar.make(binding.root, "Book added successfully", Snackbar.LENGTH_SHORT).show()
                         }
                     }

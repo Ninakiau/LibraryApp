@@ -12,6 +12,7 @@ class AddBookUseCase {
         author: String,
         year: Int,
         description: String,
+        isAvailable: Boolean
         ): Book {
 
         require(title.isNotBlank()) { "Title cannot be blank" }
@@ -19,13 +20,14 @@ class AddBookUseCase {
         require(year > 0) { "Year must be greater than 0" }
         require(description.isNotBlank()) { "Description cannot be blank" }
 
+
         val book = Book(
             id = 0,
             title = title,
             author = author,
             year = year,
             description = description,
-            isAvailable = true
+            isAvailable = isAvailable
         )
 
         return repository.addBook(book)

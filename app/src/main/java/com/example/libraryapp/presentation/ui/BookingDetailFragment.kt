@@ -6,9 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.navArgs
 import com.example.libraryapp.R
 import com.example.libraryapp.databinding.FragmentBookingDetailBinding
+import com.example.libraryapp.presentation.adapter.BookAdapter
 import com.example.libraryapp.presentation.viewmodel.BookDetailViewModel
 
 /**
@@ -23,8 +23,9 @@ class BookingDetailFragment : Fragment(R.layout.fragment_booking_detail) {
     private val binding get() = _binding!!
 
     private val viewModel: BookDetailViewModel by viewModels()
+    private lateinit var bookAdapter: BookAdapter
 
-     private var bookId: Int? = null
+    private var bookId: Int? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,9 +56,12 @@ class BookingDetailFragment : Fragment(R.layout.fragment_booking_detail) {
             binding.yearText.text = book?.year.toString()
             binding.descriptionText.text = book?.description
 
-            // Optional: Set availability chip
+
             if (book != null) {
-                binding.availabilityChip.text = if (book.isAvailable) "Available" else "Not Available"
+                binding.availabilityChip.text = if (book.isAvailable) "Available" else "Checked Out"
+                binding.availabilityChip.setOnClickListener {
+                    viewModel.toggleBookAvailability(book)
+                }
             }
 
         }
@@ -68,7 +72,9 @@ class BookingDetailFragment : Fragment(R.layout.fragment_booking_detail) {
         }
 
 
+
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

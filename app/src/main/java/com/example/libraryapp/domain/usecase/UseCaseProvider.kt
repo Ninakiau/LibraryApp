@@ -26,4 +26,8 @@ object UseCaseProvider {
         }
         return addBookUseCase!!
     }
+    fun provideToggleBookAvailabilityUseCase(): ToggleBookAvailabilityUseCase {
+        return ToggleBookAvailabilityUseCase()
+    }
+
 }
